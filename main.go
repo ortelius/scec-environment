@@ -9,6 +9,7 @@ import (
 
 	"github.com/arangodb/go-driver"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/swagger"
 	"github.com/ortelius/scec-commons/database"
 	"github.com/ortelius/scec-commons/model"
@@ -43,18 +44,18 @@ func GetEnvironments(c *fiber.Ctx) error {
 
 	defer cursor.Close() // close the cursor when returning from this function
 
-	groups := model.NewEnvironments() // define a list of environments to be returned
+	var environments []*model.Environment // define a list of environments to be returned
 
 	for cursor.HasMore() { // loop thru all of the documents
 
-		group := model.NewEnvironment() // fetched environment
-		var meta driver.DocumentMeta           // data about the fetch
+		environment := model.NewEnvironment() // fetched environment
+		var meta driver.DocumentMeta          // data about the fetch
 
 		// fetch a document from the cursor
 		if meta, err = cursor.ReadDocument(ctx, environment); err != nil {
 			logger.Sugar().Errorf("Failed to read document: %v", err)
 		}
-		environments.Environments = append(environments.Environments, environment)       // add the environment to the list
+		environments = append(environments, environment)                     // add the environment to the list
 		logger.Sugar().Infof("Got doc with key '%s' from query\n", meta.Key) // log the key
 	}
 
@@ -92,7 +93,7 @@ func GetEnvironment(c *fiber.Ctx) error {
 
 	defer cursor.Close() // close the cursor when returning from this function
 
-	environment := model.NewEnvironments() // define a environment to be returned
+	environment := model.NewEnvironment() // define a environment to be returned
 
 	if cursor.HasMore() { // environment found
 		var meta driver.DocumentMeta // data about the fetch
@@ -123,10 +124,10 @@ func GetEnvironment(c *fiber.Ctx) error {
 // @Router /msapi/environment [post]
 func NewEnvironment(c *fiber.Ctx) error {
 
-	var err error                  // for error handling
-	var meta driver.DocumentMeta   // data about the document
-	var ctx = context.Background() // use default database context
-	environment := new(model.Environment)    // define a environment to be returned
+	var err error                         // for error handling
+	var meta driver.DocumentMeta          // data about the document
+	var ctx = context.Background()        // use default database context
+	environment := new(model.Environment) // define a environment to be returned
 
 	if err = c.BodyParser(environment); err != nil { // parse the JSON into the environment object
 		return c.Status(503).Send([]byte(err.Error()))
@@ -148,10 +149,10 @@ func NewEnvironment(c *fiber.Ctx) error {
 // setupRoutes defines maps the routes to the functions
 func setupRoutes(app *fiber.App) {
 
-	app.Get("/swagger/*", swagger.HandlerDefault) // handle displaying the swagger
-	app.Get("/msapi/environment", GetEnvironment)          // list of environments
-	app.Get("/msapi/environment/:key", GetEnvironment)      // single environment based on name or key
-	app.Post("/msapi/environment", NewEnvironment)          // save a single environment
+	app.Get("/swagger/*", swagger.HandlerDefault)      // handle displaying the swagger
+	app.Get("/msapi/environment", GetEnvironment)      // list of environments
+	app.Get("/msapi/environment/:key", GetEnvironment) // single environment based on name or key
+	app.Post("/msapi/environment", NewEnvironment)     // save a single environment
 }
 
 // @title Ortelius v11 Environment Microservice
