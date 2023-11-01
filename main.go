@@ -7,7 +7,8 @@ import (
 
 	_ "cli/docs"
 
-	"github.com/arangodb/go-driver"
+	driver "github.com/arangodb/go-driver/v2/arangodb"
+	"github.com/arangodb/go-driver/v2/arangodb/shared"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/swagger"
@@ -87,7 +88,7 @@ func GetEnvironment(c *fiber.Ctx) error {
 			RETURN environment`
 
 	// run the query with patameters
-	if cursor, err = dbconn.Database.Query(ctx, aql, parameters); err != nil {
+	if cursor, err = dbconn.Database.Query(ctx, aql, &driver.QueryOptions{BindVars: parameters}); err != nil {
 		logger.Sugar().Errorf("Failed to run query: %v", err)
 	}
 
@@ -137,10 +138,12 @@ func NewEnvironment(c *fiber.Ctx) error {
 
 	logger.Sugar().Infof("%s=%s\n", cid, dbStr) // log the new nft
 
+	var resp driver.CollectionDocumentCreateResponse
 	// add the environment to the database.  Ignore if it already exists since it will be identical
-	if meta, err = dbconn.Collection.CreateDocument(ctx, environment); err != nil && !driver.IsConflict(err) {
+	if resp, err = dbconn.Collection.CreateDocument(ctx, environment); err != nil && !shared.IsConflict(err) {
 		logger.Sugar().Errorf("Failed to create document: %v", err)
 	}
+	meta = resp.DocumentMeta
 	logger.Sugar().Infof("Created document in collection '%s' in db '%s' key='%s'\n", dbconn.Collection.Name(), dbconn.Database.Name(), meta.Key)
 
 	return c.JSON(environment) // return the environment object in JSON format.  This includes the new _key
