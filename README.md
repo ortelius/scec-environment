@@ -4,7 +4,7 @@
 
 RestAPI for the Environment Object
 ![Release](https://img.shields.io/github/v/release/ortelius/scec-environment?sort=semver)
-![license](https://img.shields.io/github/license/ortelius/scec-environment)
+![license](https://img.shields.io/github/license/ortelius/.github)
 
 ![Build](https://img.shields.io/github/actions/workflow/status/ortelius/scec-environment/build-push-chart.yml)
 [![MegaLinter](https://github.com/ortelius/scec-environment/workflows/MegaLinter/badge.svg?branch=main)](https://github.com/ortelius/scec-environment/actions?query=workflow%3AMegaLinter+branch%3Amain)
