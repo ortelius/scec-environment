@@ -2,6 +2,17 @@ apiVersion: v1
 entries:
   scec-environment:
   - apiVersion: v2
+    appVersion: 11.0.835
+    created: "2024-10-29T23:02:51.061329938Z"
+    description: Domain microservice
+    digest: 64d6282cf8cf16303ad6e2c025f75804e7cefbe61ecaf26b3b37aa0f088b8e97
+    icon: https://ortelius.github.io/ortelius-charts/logo.png
+    name: scec-environment
+    type: application
+    urls:
+    - https://github.com/ortelius/scec-environment/releases/download/scec-environment-11.0.835/scec-environment-11.0.835.tgz
+    version: 11.0.835
+  - apiVersion: v2
     appVersion: 11.0.833
     created: "2024-10-29T05:13:35.070846777Z"
     description: Domain microservice
@@ -3917,4 +3928,4 @@ entries:
     urls:
     - https://github.com/ortelius/scec-environment/releases/download/scec-environment-11.0.10/scec-environment-11.0.10.tgz
     version: 11.0.10
-generated: "2024-10-29T05:13:35.07054845Z"
+generated: "2024-10-29T23:02:51.061006504Z"
